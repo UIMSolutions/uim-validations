@@ -1,1 +1,1 @@
-module uim.myname.classes;
+module uim.validations.classes;

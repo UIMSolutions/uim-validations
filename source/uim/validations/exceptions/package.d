@@ -1,1 +1,1 @@
-module uim.myname.exceptions;
+module uim.validations.exceptions;
