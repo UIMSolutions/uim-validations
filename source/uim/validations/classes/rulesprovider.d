@@ -1,6 +1,6 @@
-module uim.cake.Validation;
+module uim.validations.classes.rulesproviderx;
 
-import uim.cake;
+import uim.validations;
 
 @safe:
 
@@ -14,11 +14,7 @@ class RulesProvider {
     // The class/object to proxy
     protected object|string my_class;
 
-    /**
-     * The proxied class" reflection
-     *
-     * @var \ReflectionClass<object>
-     */
+    // The proxied class" reflection
     protected ReflectionClass my_reflection;
 
     /**
@@ -44,9 +40,9 @@ class RulesProvider {
      * string mymethod the validation method to call
      * @param array myarguments the list of arguments to pass to the method
      */
-    bool __call(string mymethod, array myarguments) {
-        mymethod = _reflection.getMethod(mymethod);
-        myargumentList = mymethod.getParameters();
+    bool __call(string validationMethod, array myarguments) {
+        auto method = _reflection.getMethod(mymethod);
+        myargumentList = method.getParameters();
 
         ReflectionParameter myargument = array_pop(myargumentList);
         if (myargument.name() != "context") {
@@ -54,6 +50,6 @@ class RulesProvider {
         }
         myobject = isString(_class) ? null : _class;
 
-        return mymethod.invokeArgs(myobject, myarguments);
+        return method.invokeArgs(myobject, myarguments);
     }
 }

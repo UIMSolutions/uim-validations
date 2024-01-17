@@ -1,6 +1,6 @@
-module uim.cake.Validation;
+module uim.validations.classes.validationx;
 
-import uim.cake;
+import uim.validations;
 
 @safe:
 

@@ -1,6 +1,6 @@
-module uim.cake.Validation;
+module uim.validations.classes.validationrulex;
 
-import uim.cake;
+import uim.validations;
 
 @safe:
 
@@ -11,10 +11,8 @@ import uim.cake;
 class ValidationRule {
     /**
      * The method to be called for a given scope
-     *
-     * @var callable|string
      */
-    protected my_rule;
+    protected string my_rule;
 
     /**
      * The "on" key
