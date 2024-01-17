@@ -1,1 +1,1 @@
-# Package 📦 uim.myname.exceptions
+# Package 📦 uim.validations.exceptions
