@@ -80,30 +80,27 @@ trait ValidatorAwareTrait {
      * Params:
      * string myname The name of the validation set to create.
      */
-    protected Validator createValidator(string myname) {
-        mymethod = "validation" ~ ucfirst(myname);
+    protected Validator createValidator(string validationSetName) {
+        auto mymethod = "validation" ~ ucfirst(validationSetName);
         if (!this.validationMethodExists(mymethod)) {
             mymessage = "The `%s.%s()` validation method does not exists.".format(class, mymethod);
             throw new InvalidArgumentException(mymessage);
         }
-        myvalidator = new _validatorClass();
-        myvalidator = this.mymethod(myvalidator);
+        
+        Validator result = this.mymethod(new _validatorClass());
         if (cast(IEventDispatcher)this) {
-            myevent = defined(class ~ ".BUILD_VALIDATOR_EVENT")
+            auto validatorEvent = defined(class ~ ".BUILD_VALIDATOR_EVENT")
                 ? BUILD_VALIDATOR_EVENT
                 : "Model.buildValidator";
-            this.dispatchEvent(myevent, compact("validator", "name"));
+            this.dispatchEvent(validatorEvent, compact("validator", "name"));
         }
         assert(
-            cast(Validator)myvalidator,
-                "The `%s.%s()` validation method must return an instance of `%s`.".format(
-                class,
-                mymethod,
-                Validator.classname
-            )
+            cast(Validator)result,
+                "The `%s.%s()` validation method must return an instance of `%s`."
+                .format(class, mymethod, result.classname)
         );
 
-        return myvalidator;
+        return result;
     }
     
     /**
