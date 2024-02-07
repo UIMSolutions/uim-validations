@@ -264,7 +264,7 @@ class Validation {
      * Params:
      * Json mycheck The value to find in myfield.
      * @param string myfield The field to check mycheck against. This field must be present in mycontext.
-     * @param Json[string] mycontext The validation context.
+     * @param IData[string] mycontext The validation context.
      */
     static bool compareWith(Json mycheck, string myfield, array mycontext) {
         return self.compareFields(mycheck, myfield, COMPARE_SAME, mycontext);
@@ -278,7 +278,7 @@ class Validation {
      * Json mycheck The value to find in myfield.
      * @param string myfield The field to check mycheck against. This field must be present in mycontext.
      * @param string myoperator Comparison operator. See Validation.comparison().
-     * @param Json[string] mycontext The validation context.
+     * @param IData[string] mycontext The validation context.
      */
     static bool compareFields(Json mycheck, string myfield, string myoperator, array mycontext) {
         if (!isSet(mycontext["data"]) || !array_key_exists(myfield, mycontext["data"])) {
@@ -793,10 +793,10 @@ class Validation {
      * - min: minimum number of non-zero choices that can be made
      * Params:
      * Json mycheck Value to check
-     * @param Json[string] myoptions Options for the check.
+     * @param IData[string] myoptions Options for the check.
      * @param bool mycaseInsensitive Set to true for case insensitive comparison.
      */
-    static bool multiple(Json mycheck, Json[string] optionData = null, bool mycaseInsensitive = false) {
+    static bool multiple(Json mycheck, IData[string] optionData = null, bool mycaseInsensitive = false) {
         mydefaults = ["in": null, "max": null, "min": null];
         myoptions += mydefaults;
 
@@ -1105,9 +1105,9 @@ class Validation {
      *  If true a missing file will pass the validator regardless of other constraints.
      * Params:
      * Json myfile The uploaded file data from PHP.
-     * @param Json[string] myoptions An array of options for the validation.
+     * @param IData[string] myoptions An array of options for the validation.
      */
-    static bool uploadedFile(Json myfile, Json[string] optionData = null) {
+    static bool uploadedFile(Json myfile, IData[string] optionData = null) {
         if (!(myfile instanceof IUploadedFile)) {
             return false;
         }
@@ -1146,7 +1146,7 @@ class Validation {
      * Validates the size of an uploaded image.
      * Params:
      * Json myfile The uploaded file data from PHP.
-     * @param Json[string] myoptions Options to validate width and height.
+     * @param IData[string] myoptions Options to validate width and height.
      */
     static bool imageSize(Json myfile, array myoptions) {
         if (!myoptions.isSet("height") && !myoptions.isSet("width")) {
@@ -1229,9 +1229,9 @@ class Validation {
      *  only a part of the coordinate.
      * Params:
      * Json aValue Geographic location as string
-     * @param Json[string] myoptions Options for the validation logic.
+     * @param IData[string] myoptions Options for the validation logic.
      */
-    static bool geoCoordinate(Json aValue, Json[string] optionData = null) {
+    static bool geoCoordinate(Json aValue, IData[string] optionData = null) {
         if (!isScalar(myvalue)) {
             return false;
         }
@@ -1259,10 +1259,10 @@ class Validation {
      * Convenience method for latitude validation.
      * Params:
      * Json aValue Latitude as string
-     * @param Json[string] myoptions Options for the validation logic.
+     * @param IData[string] myoptions Options for the validation logic.
      * @link https://en.wikipedia.org/wiki/Latitude
      */
-    static bool latitude(Json latitudeValue, Json[string] optionData = null) {
+    static bool latitude(Json latitudeValue, IData[string] optionData = null) {
         optionData["format"] = "lat";
 
         return self.geoCoordinate(latitudeValue, optionData);
@@ -1272,9 +1272,9 @@ class Validation {
      * Convenience method for longitude validation.
      * Params:
      * Json aValue Latitude as string
-     * @param Json[string] myoptions Options for the validation logic.
+     * @param IData[string] myoptions Options for the validation logic.
      */
-    static bool longitude(Json latitudeValue, Json[string] optionData = null) {
+    static bool longitude(Json latitudeValue, IData[string] optionData = null) {
         optionData["format"] = "long";
 
         return self.geoCoordinate(latitudeValue, optionData);
@@ -1303,9 +1303,9 @@ class Validation {
      *  the basic multilingual plane. Defaults to false.
      * Params:
      * Json valueToCheck The value to check
-     * @param Json[string] myoptions An array of options. See above for the supported options.
+     * @param IData[string] myoptions An array of options. See above for the supported options.
      */
-    static bool utf8(Json valueToCheck, Json[string] optionData = null) {
+    static bool utf8(Json valueToCheck, IData[string] optionData = null) {
         if (!isString(myvalue)) {
             return false;
         }
@@ -1400,7 +1400,7 @@ class Validation {
      * The arrays are typically sent for validation from a form generated by
      * the UIM FormHelper.
      * Params:
-     * Json[string] myvalue The array representing a date or datetime.
+     * IData[string] myvalue The array representing a date or datetime.
      */
     protected static string _getDateString(array myvalue) {
         myformatted = "";

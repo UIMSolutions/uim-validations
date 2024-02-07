@@ -47,7 +47,7 @@ class ValidationRule {
     /**
      * Constructor
      * Params:
-     * Json[string] myvalidator The validator properties
+     * IData[string] myvalidator The validator properties
      */
     this(array myvalidator) {
        _addValidatorProps(myvalidator);
@@ -67,9 +67,9 @@ class ValidationRule {
      * it is assumed that the rule failed and the error message was given as a result.
      * Params:
      * Json aValue The data to validate
-     * @param Json[string] myproviders Associative array with objects or class names that will
+     * @param IData[string] myproviders Associative array with objects or class names that will
      * be passed as the last argument for the validation method
-     * @param Json[string] mycontext A key value list of data that could be used as context
+     * @param IData[string] mycontext A key value list of data that could be used as context
      * during validation. Recognized keys are:
      * - newRecord: (boolean) whether the data to be validated belongs to a
      *  new record
@@ -117,7 +117,7 @@ class ValidationRule {
     /**
      * Checks if the validation rule should be skipped
      * Params:
-     * Json[string] mycontext A key value list of data that could be used as context
+     * IData[string] mycontext A key value list of data that could be used as context
      * during validation. Recognized keys are:
      * - newRecord: (boolean) whether the data to be validated belongs to a
      *  new record
@@ -143,7 +143,7 @@ class ValidationRule {
     /**
      * Sets the rule properties from the rule entry in validate
      * Params:
-     * Json[string] myvalidator [optional]
+     * IData[string] myvalidator [optional]
      */
     protected void _addValidatorProps(array myvalidator = []) {
         foreach (myvalidator as aKey: myvalue) {

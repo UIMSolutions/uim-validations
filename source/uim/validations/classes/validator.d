@@ -383,20 +383,21 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
         } else {
             myrules = myname;
         }
-        foreach (myrules as myname: myrule) {
-            if (isArray(myrule)) {
-                myrule += [
-                    "rule": myname,
-                    "last": _stopOnFailure,
-                ];
-            }
-            if (!isString(myname)) {
-                throw new InvalidArgumentException(
-                    "You cannot add validation rules without a `name` key. Update rules array to have string keys."
-                );
-            }
-            myvalidationSet.add(myname, myrule);
-        }
+        myrules.byKeyValue
+            .each!((nameRule) {
+                if (isArray(nameRule.value)) {
+                    nameRule.value += [
+                        "rule": nameRule.key,
+                        "last": _stopOnFailure,
+                    ];
+                }
+                if (!isString(nameRule.key)) {
+                    throw new InvalidArgumentException(
+                        "You cannot add validation rules without a `name` key. Update rules array to have string keys."
+                    );
+                }
+                myvalidationSet.add(nameRule.key, nameRule.value);
+            });
         return this;
     }
     
@@ -877,7 +878,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Converts validator to fieldName: mysettings array
      * Params:
      * string aFieldName name of field
-     * @param Json[string] mydefaults default settings
+     * @param IData[string] mydefaults default settings
      * @param array<string|int, mixed>|string|int mysettings settings from data
      */
     protected array<string, array<string|int, mixed>> _convertValidatorToArray(
@@ -2253,7 +2254,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Add a validation rule to ensure the field is an uploaded file
      * Params:
      * string myfield The field you want to apply the rule to.
-     * @param Json[string] myoptions An array of options.
+     * @param IData[string] myoptions An array of options.
      * @param string|null myMessage The error message when the rule fails.
      * @param \Closure|string|null mywhen Either "create" or "update" or a Closure that returns
      *  true when the validation rule should be applied.
@@ -2525,7 +2526,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Add a validation rule for a multiple select. Comparison is case sensitive by default.
      * Params:
      * string myfield The field you want to apply the rule to.
-     * @param Json[string] myoptions The options for the validator. Includes the options defined in
+     * @param IData[string] myoptions The options for the validator. Includes the options defined in
      *  \UIM\Validation\Validation.multiple() and the `caseInsensitive` parameter.
      * @param string|null myMessage The error message when the rule fails.
      * @param \Closure|string|null mywhen Either "create" or "update" or a Closure that returns
@@ -2534,7 +2535,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      */
     auto multipleOptions(
         string myfield,
-        Json[string] optionData = null,
+        IData[string] optionData = null,
         string myMessage = null,
         Closure|string|null mywhen = null
     ) {
@@ -2721,7 +2722,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * due to the field missing in the data array
      * Params:
      * \UIM\Validation\ValidationSet myfield The set of rules for a field.
-     * @param Json[string] mycontext A key value list of data containing the validation context.
+     * @param IData[string] mycontext A key value list of data containing the validation context.
      */
     protected bool _checkPresence(ValidationSet myfield, array mycontext) {
         myrequired = myfield.isPresenceRequired();
@@ -2741,7 +2742,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Returns whether the field can be left blank according to `allowEmpty`
      * Params:
      * \UIM\Validation\ValidationSet myfield the set of rules for a field
-     * @param Json[string] mycontext a key value list of data containing the validation context.
+     * @param IData[string] mycontext a key value list of data containing the validation context.
      */
     protected bool _canBeEmpty(ValidationSet myfield, array mycontext) {
         myallowed = myfield.isEmptyAllowed();
@@ -2810,7 +2811,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * @param array data the full data passed to the validator
      * @param bool mynewRecord whether is it a new record or an existing one
      */
-    protected Json[string] _processRules(string myfield, ValidationSet myrules, array data, bool mynewRecord) {
+    protected IData[string] _processRules(string myfield, ValidationSet myrules, array data, bool mynewRecord) {
         myerrors = [];
         // Loading default provider in case there is none
         this.getProvider("default");
@@ -2843,7 +2844,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
     /**
      * Get the printable version of this object.
      */
-    Json[string] debugInfo() {
+    IData[string] debugInfo() {
         myfields = [];
         foreach (_fields as myname: myfieldSet) {
             myfields[myname] = [
