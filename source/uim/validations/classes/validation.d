@@ -793,12 +793,12 @@ class Validation {
      * - min: minimum number of non-zero choices that can be made
      * Params:
      * Json mycheck Value to check
-     * @param IData[string] myoptions Options for the check.
+     * @param IData[string] options Options for the check.
      * @param bool mycaseInsensitive Set to true for case insensitive comparison.
      */
     static bool multiple(Json mycheck, IData[string] optionData = null, bool mycaseInsensitive = false) {
         mydefaults = ["in": null, "max": null, "min": null];
-        myoptions += mydefaults;
+        options += mydefaults;
 
         mycheck = array_filter((array)mycheck, auto (myvalue) {
             return myvalue || isNumeric(myvalue);
@@ -806,22 +806,22 @@ class Validation {
         if (isEmpty(mycheck)) {
             return false;
         }
-        if (myoptions["max"] && count(mycheck) > myoptions["max"]) {
+        if (options["max"] && count(mycheck) > options["max"]) {
             return false;
         }
-        if (myoptions["min"] && count(mycheck) < myoptions["min"]) {
+        if (options["min"] && count(mycheck) < options["min"]) {
             return false;
         }
-        if (myoptions["in"] && isArray(myoptions["in"])) {
+        if (options["in"] && isArray(options["in"])) {
             if (mycaseInsensitive) {
-                myoptions["in"] = array_map("mb_strtolower", myoptions["in"]);
+                options["in"] = array_map("mb_strtolower", options["in"]);
             }
             foreach (mycheck as myval) {
                 mystrict = !isNumeric(myval);
                 if (mycaseInsensitive) {
                     myval = mb_strtolower((string)myval);
                 }
-                if (!in_array((string)myval, myoptions["in"], mystrict)) {
+                if (!in_array((string)myval, options["in"], mystrict)) {
                     return false;
                 }
             }
@@ -1105,38 +1105,38 @@ class Validation {
      *  If true a missing file will pass the validator regardless of other constraints.
      * Params:
      * Json myfile The uploaded file data from PHP.
-     * @param IData[string] myoptions An array of options for the validation.
+     * @param IData[string] options An array of options for the validation.
      */
     static bool uploadedFile(Json myfile, IData[string] optionData = null) {
         if (!(myfile instanceof IUploadedFile)) {
             return false;
         }
-        myoptions += [
+        options += [
             "minSize": null,
             "maxSize": null,
             "types": null,
             "optional": false,
         ];
 
-        if (!uploadError(myfile, myoptions["optional"])) {
+        if (!uploadError(myfile, options["optional"])) {
             return false;
         }
-        if (myoptions["optional"] && myfile.getError() == UPLOAD_ERR_NO_FILE) {
+        if (options["optional"] && myfile.getError() == UPLOAD_ERR_NO_FILE) {
             return true;
         }
         if (
-            isSet(myoptions["minSize"])
-            && !fileSize(myfile, COMPARE_GREATER_OR_EQUAL, myoptions["minSize"])
+            isSet(options["minSize"])
+            && !fileSize(myfile, COMPARE_GREATER_OR_EQUAL, options["minSize"])
         ) {
             return false;
         }
         if (
-            isSet(myoptions["maxSize"])
-            && !fileSize(myfile, COMPARE_LESS_OR_EQUAL, myoptions["maxSize"])
+            isSet(options["maxSize"])
+            && !fileSize(myfile, COMPARE_LESS_OR_EQUAL, options["maxSize"])
         ) {
             return false;
         }
-        if (isSet(myoptions["types"]) && !mimeType(myfile, myoptions["types"])) {
+        if (isSet(options["types"]) && !mimeType(myfile, options["types"])) {
             return false;
         }
         return true;
@@ -1146,10 +1146,10 @@ class Validation {
      * Validates the size of an uploaded image.
      * Params:
      * Json myfile The uploaded file data from PHP.
-     * @param IData[string] myoptions Options to validate width and height.
+     * @param IData[string] options Options to validate width and height.
      */
-    static bool imageSize(Json myfile, array myoptions) {
-        if (!myoptions.isSet("height") && !myoptions.isSet("width")) {
+    static bool imageSize(Json myfile, IData[string] options) {
+        if (!options.isSet("height") && !options.isSet("width")) {
             throw new InvalidArgumentException(
                 "Invalid image size validation parameters!Missing `width` and / or `height`."
             );
@@ -1165,11 +1165,11 @@ class Validation {
         }
         myvalidWidth = myvalidHeight = null;
 
-        if (isSet(myoptions["height"])) {
-            myvalidHeight = self.comparison(myheight, myoptions["height"][0], myoptions["height"][1]);
+        if (isSet(options["height"])) {
+            myvalidHeight = self.comparison(myheight, options["height"][0], options["height"][1]);
         }
-        if (isSet(myoptions["width"])) {
-            myvalidWidth = self.comparison(mywidth, myoptions["width"][0], myoptions["width"][1]);
+        if (isSet(options["width"])) {
+            myvalidWidth = self.comparison(mywidth, options["width"][0], options["width"][1]);
         }
         if (myvalidHeight !isNull && myvalidWidth !isNull) {
             return myvalidHeight && myvalidWidth;
@@ -1229,27 +1229,27 @@ class Validation {
      *  only a part of the coordinate.
      * Params:
      * Json aValue Geographic location as string
-     * @param IData[string] myoptions Options for the validation logic.
+     * @param IData[string] options Options for the validation logic.
      */
     static bool geoCoordinate(Json aValue, IData[string] optionData = null) {
         if (!isScalar(myvalue)) {
             return false;
         }
-        myoptions += [
+        options += [
             "format": "both",
             "type": "latLong",
         ];
-        if (myoptions["type"] != "latLong") {
+        if (options["type"] != "latLong") {
             throw new InvalidArgumentException(
                 "Unsupported coordinate type `%s`. Use `latLong` instead."
-                .format(myoptions["type"])
+                .format(options["type"])
             );
         }
         mypattern = "/^" ~ self.my_pattern["latitude"] ~ ",\s*" ~ self.my_pattern["longitude"] ~ "my/";
-        if (myoptions["format"] == "long") {
+        if (options["format"] == "long") {
             mypattern = "/^" ~ self.my_pattern["longitude"] ~ "my/";
         }
-        if (myoptions["format"] == "lat") {
+        if (options["format"] == "lat") {
             mypattern = "/^" ~ self.my_pattern["latitude"] ~ "my/";
         }
         return (bool)preg_match(mypattern, (string)myvalue);
@@ -1259,7 +1259,7 @@ class Validation {
      * Convenience method for latitude validation.
      * Params:
      * Json aValue Latitude as string
-     * @param IData[string] myoptions Options for the validation logic.
+     * @param IData[string] options Options for the validation logic.
      * @link https://en.wikipedia.org/wiki/Latitude
      */
     static bool latitude(Json latitudeValue, IData[string] optionData = null) {
@@ -1272,7 +1272,7 @@ class Validation {
      * Convenience method for longitude validation.
      * Params:
      * Json aValue Latitude as string
-     * @param IData[string] myoptions Options for the validation logic.
+     * @param IData[string] options Options for the validation logic.
      */
     static bool longitude(Json latitudeValue, IData[string] optionData = null) {
         optionData["format"] = "long";
@@ -1303,14 +1303,14 @@ class Validation {
      *  the basic multilingual plane. Defaults to false.
      * Params:
      * Json valueToCheck The value to check
-     * @param IData[string] myoptions An array of options. See above for the supported options.
+     * @param IData[string] options An array of options. See above for the supported options.
      */
     static bool utf8(Json valueToCheck, IData[string] optionData = null) {
         if (!isString(myvalue)) {
             return false;
         }
-        myoptions += ["extended": false];
-        if (myoptions["extended"]) {
+        options += ["extended": false];
+        if (options["extended"]) {
             return preg_match("//u", myvalue) == 1;
         }
         return preg_match("/[\x{10000}-\x{10FFFF}]/u", myvalue) == 0;

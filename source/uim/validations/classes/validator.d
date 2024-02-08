@@ -2254,7 +2254,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Add a validation rule to ensure the field is an uploaded file
      * Params:
      * string myfield The field you want to apply the rule to.
-     * @param IData[string] myoptions An array of options.
+     * @param IData[string] options An array of options.
      * @param string|null myMessage The error message when the rule fails.
      * @param \Closure|string|null mywhen Either "create" or "update" or a Closure that returns
      *  true when the validation rule should be applied.
@@ -2262,7 +2262,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      */
     auto uploadedFile(
         string myfield,
-        array myoptions,
+        IData[string] options,
         string myMessage = null,
         Closure|string|null mywhen = null
     ) {
@@ -2276,7 +2276,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
         myextra = array_filter(["on": mywhen, "message": myMessage]);
 
         return this.add(myfield, "uploadedFile", myextra ~ [
-            "rule": ["uploadedFile", myoptions],
+            "rule": ["uploadedFile", options],
         ]);
     }
     
@@ -2526,7 +2526,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
      * Add a validation rule for a multiple select. Comparison is case sensitive by default.
      * Params:
      * string myfield The field you want to apply the rule to.
-     * @param IData[string] myoptions The options for the validator. Includes the options defined in
+     * @param IData[string] options The options for the validator. Includes the options defined in
      *  \UIM\Validation\Validation.multiple() and the `caseInsensitive` parameter.
      * @param string|null myMessage The error message when the rule fails.
      * @param \Closure|string|null mywhen Either "create" or "update" or a Closure that returns
@@ -2546,11 +2546,11 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
             }
         }
         myextra = array_filter(["on": mywhen, "message": myMessage]);
-        mycaseInsensitive = myoptions["caseInsensitive"] ?? false;
-        unset(myoptions["caseInsensitive"]);
+        mycaseInsensitive = options["caseInsensitive"] ?? false;
+        unset(options["caseInsensitive"]);
 
         return this.add(myfield, "multipleOptions", myextra ~ [
-            "rule": ["multiple", myoptions, mycaseInsensitive],
+            "rule": ["multiple", options, mycaseInsensitive],
         ]);
     }
     
