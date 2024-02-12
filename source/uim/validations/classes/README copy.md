@@ -14,8 +14,8 @@ fields and validation sets. Creating a validator is simple:
 ```php
 use UIM\Validation\Validator;
 
-$validator = new Validator();
-$validator
+validator = new Validator();
+validator
     .requirePresence("email")
     .add("email", "validFormat", [
         "rule": "email",
@@ -26,8 +26,8 @@ $validator
     .requirePresence("comment")
     .notEmptyString("comment", "You need to give a comment.");
 
-$errors = $validator.validate($_POST);
-if (!empty($errors)) {
+errors = validator.validate(_POST);
+if (!empty(errors)) {
     // display errors.
 }
 ```
