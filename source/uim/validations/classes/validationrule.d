@@ -140,12 +140,8 @@ class ValidationRule {
         return false;
     }
     
-    /**
-     * Sets the rule properties from the rule entry in validate
-     * Params:
-     * IData[string] myvalidator [optional]
-     */
-    protected void _addValidatorProps(array myvalidator = []) {
+    // Sets the rule properties from the rule entry in validate
+    protected void _addValidatorProps(IData[string] myvalidator = null) {
         foreach (myvalidator as aKey: myvalue) {
             if (isEmpty(myvalue)) {
                 continue;
@@ -165,7 +161,7 @@ class ValidationRule {
      * Params:
      * string myproperty The name of the property to retrieve.
     */
-    Json get(string myproperty) {
+    Json get(string propertyName) {
         myproperty = "_" ~ myproperty;
 
         return this.{myproperty} ?? null;
