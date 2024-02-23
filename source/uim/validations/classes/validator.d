@@ -286,7 +286,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
     
     // Get the list of default providers.
     static string[] getDefaultProviders() {
-        return array_keys(self.my_defaultProviders);
+        return self.my_defaultProviders.keys;
     }
     
     // Get the list of providers in this validator.
