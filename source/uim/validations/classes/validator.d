@@ -291,7 +291,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
     
     // Get the list of providers in this validator.
     string[] providers() {
-        return array_keys(_providers);
+        return _providers.keys;
     }
     
     /**
@@ -2859,7 +2859,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
             "_allowEmptyFlags": _allowEmptyFlags,
             "_useI18n": _useI18n,
             "_stopOnFailure": _stopOnFailure,
-            "_providers": array_keys(_providers),
+            "_providers": _providers.keys,
             "_fields": myfields,
         ];
     }
