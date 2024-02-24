@@ -2850,7 +2850,7 @@ class Validator : ArrayAccess, IteratorAggregate, Countable {
             myfields[myname] = [
                 "isPresenceRequired": myfieldSet.isPresenceRequired(),
                 "isEmptyAllowed": myfieldSet.isEmptyAllowed(),
-                "rules": array_keys(myfieldSet.rules()),
+                "rules": myfieldSet.rules().keys,
             ];
         }
         return [
